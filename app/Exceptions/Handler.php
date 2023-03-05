@@ -6,7 +6,7 @@ use App\Common\Constants\ErrorCode;
 use App\Common\Response\RespResult;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
-use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -69,9 +69,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if($exception instanceof NotFoundHttpException) {
+        if($exception instanceof NotFoundHttpException || $exception instanceof MethodNotAllowedHttpException) {
             return RespResult::error(ErrorCode::NOT_FOUND);
         }
+
 
         if ($request->expectsJson()) {
             return RespResult::error();

@@ -28,6 +28,9 @@ Route::namespace('v1')->prefix("v1")->group(function () {
 
     //获取access_token
     Route::post('/oauth/token', 'AuthController@login');
+
+    //user 列表
+    Route::get('/users', 'UserController@list');
 });
 
 
