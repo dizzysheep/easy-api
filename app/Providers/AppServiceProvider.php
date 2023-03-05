@@ -25,6 +25,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->ListenSql();
+    }
+
+    /**
+     * @desc 监听sql
+     * @return void
+     */
+    public function ListenSql()
+    {
         DB::listen(function ($query) {
             $data = [
                 'sql' => $query->sql,
@@ -32,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
                 'time' => $query->time,
                 'request_id' => request()->headers->get("X-Request-ID"),
             ];
-            Log::info("sql exec",$data);
+            Log::info("sql exec", $data);
         });
     }
 }
