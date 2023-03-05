@@ -2,10 +2,12 @@
 
 namespace App\Exceptions;
 
+use App\Common\Constants\ErrorCode;
 use App\Common\Response\RespResult;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -67,8 +69,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if($exception instanceof NotFoundHttpException) {
+            return RespResult::error(ErrorCode::NOT_FOUND);
+        }
+
         if ($request->expectsJson()) {
-            return RespResult::error($exception->getCode(), $exception->getMessage());
+            return RespResult::error();
         }
 
         return parent::render($request, $exception);

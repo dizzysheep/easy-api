@@ -12,10 +12,9 @@ class RespResult
      * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function success(array $data = [], string $message = "ok"): \Illuminate\Http\JsonResponse
+    public static function success(array $data = [], string $message = ""): \Illuminate\Http\JsonResponse
     {
-        $data = ['code' => ErrorCode::SUCCESS, "message" => $message, "data" => $data];
-        return response()->json($data);
+        return self::result(ErrorCode::SUCCESS, $message, $data);
     }
 
     /**
@@ -25,7 +24,7 @@ class RespResult
      * @param array $data
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function error(int $code = ErrorCode::FAIL, string $message = "error", array $data = []): \Illuminate\Http\JsonResponse
+    public static function error(int $code = ErrorCode::FAIL, string $message = "", array $data = []): \Illuminate\Http\JsonResponse
     {
         return self::result($code, $message, $data);
     }
@@ -39,6 +38,7 @@ class RespResult
      */
     public static function result(int $code, $message, array $data): \Illuminate\Http\JsonResponse
     {
+        $message = $message ?: ErrorCode::getErrMessage($code);
         $data = ['code' => $code, "message" => $message, "data" => $data];
         return response()->json($data);
     }
