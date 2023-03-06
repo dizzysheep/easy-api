@@ -31,6 +31,11 @@ Route::namespace('v1')->prefix("v1")->group(function () {
 
     //user 列表
     Route::get('/users', 'UserController@list');
+
+    Route::get('/send' , 'HomeController@send');
+
+    //发送富文本邮件
+    Route::get('/sendbeauty' , 'HomeController@beauty');
 });
 
 
