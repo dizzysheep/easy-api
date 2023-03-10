@@ -20,6 +20,9 @@ class ErrorCode
     //无效token
     const VALID_ACCESS_TOKEN = 1001;
 
+    //没有权限
+    const NO_PERMISSION = 1002;
+
 
     /**
      * @desc 返回错误信息
@@ -34,6 +37,7 @@ class ErrorCode
             self::VALID_FAIL => '验证失败',
             self::NOT_FOUND => '未找到路由',
             self::VALID_ACCESS_TOKEN => '无效token',
+            self::NO_PERMISSION => '没有权限',
         ];
         return $errMsg[$errCode] ?? "系统错误";
     }

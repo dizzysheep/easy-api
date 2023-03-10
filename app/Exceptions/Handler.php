@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Common\Constants\ErrorCode;
 use App\Common\Response\RespResult;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -50,8 +51,9 @@ class Handler extends ExceptionHandler
             'method' => request()->method(),
             'error_code' => $exception->getCode(),
             'error_message' => $exception->getMessage(),
-            'error_line' => $exception->getLine(),
-            'error_file' => $exception->getFile(),
+            'request_id' => request()->headers->get("X-Request-ID"),
+            'error_line' => $exception->getTrace()[0]['line'],
+            'error_file' => $exception->getTrace()[0]['file'],
         ];
         Log::error("exception err", $errInfo);
 
@@ -69,10 +71,13 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if($exception instanceof NotFoundHttpException || $exception instanceof MethodNotAllowedHttpException) {
+        if ($exception instanceof NotFoundHttpException || $exception instanceof MethodNotAllowedHttpException) {
             return RespResult::error(ErrorCode::NOT_FOUND);
         }
 
+        if ($exception instanceof AuthenticationException) {
+            return RespResult::error(ErrorCode::NO_PERMISSION);
+        }
 
         if ($request->expectsJson()) {
             return RespResult::error();
